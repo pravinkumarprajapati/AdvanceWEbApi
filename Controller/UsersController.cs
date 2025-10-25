@@ -10,12 +10,12 @@ namespace AdvanceWebApi.Controller
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController(
-        ILogger<TokenController> logger,
-        UserManager<IdentityUser> userManager) : ControllerBase
+        ILogger<UsersController> logger,
+        UserManager<RegisterModel> userManager) : ControllerBase
     {
 
-        private readonly ILogger<TokenController> _logger = logger;
-        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly ILogger<UsersController> _logger = logger;
+        private readonly UserManager<RegisterModel> _userManager = userManager;
 
         [HttpPost]
         [Route("register")]
@@ -35,6 +35,7 @@ namespace AdvanceWebApi.Controller
                 Email = register.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = register.UserName,
+                Password = register.Password
 
             };
             var result = await _userManager.CreateAsync(user, register.Password);

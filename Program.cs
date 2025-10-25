@@ -27,8 +27,6 @@ builder.Services.AddDbContext<AdvanceWebApiContext>(options => options.UseSqlite
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
- 
-builder.Services.AddControllers();
 
 builder.Services.AddAuthorization();
 
@@ -46,7 +44,7 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( "superSecretKey@345"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345ThisIsAVeryLongSecretKeyForJWTTokenGeneration123456789"));
         options.SaveToken = true;
         options.Authority = "https://demo.identityserver.io/";
         options.Audience = "api";
@@ -63,6 +61,8 @@ builder.Services.AddAuthentication("Bearer")
 var app = builder.Build();
 
 
+app.UseHttpsRedirection();
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -70,12 +70,9 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseAuthentication();
 app.MapControllers();
-
-app.UseHttpsRedirection();
 app.Run();

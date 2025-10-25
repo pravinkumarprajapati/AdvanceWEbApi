@@ -13,20 +13,25 @@ namespace AdvanceWEbApi.Controller
     [ApiController]
     public class TokenController(
         ILogger<TokenController> logger,
-        UserManager<IdentityUser> userManager) : ControllerBase
+        UserManager<RegisterModel> userManager) : ControllerBase
     {
    
         private readonly ILogger<TokenController> _logger = logger;
-        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly UserManager<RegisterModel> _userManager = userManager;
 
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user == null && await _userManager.CheckPasswordAsync(user, model.Password))
+            if (!ModelState.IsValid)
             {
-                return Unauthorized();   
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                return Unauthorized(new { Status = "Error", Message = "Invalid username or password" });   
             }
 
             var authClaims = new List<Claim>()
@@ -35,7 +40,7 @@ namespace AdvanceWEbApi.Controller
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345ThisIsAVeryLongSecretKeyForJWTTokenGeneration123456789"));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
