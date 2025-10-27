@@ -16,8 +16,8 @@ builder.Services.AddIdentity<RegisterModel, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
 })
-    .AddEntityFrameworkStores<AdvanceWebApiContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<AdvanceWebApiContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddDbContext<AdvanceWebApiContext>(options => options.UseSqlite(connectionString));
 

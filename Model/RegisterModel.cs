@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace AdvanceWebApi.Model
 {
     public class RegisterModel : IdentityUser
     {
-        public string Password { get; set; }
+        [Required]
+        public required string Password { get; set; }
     }
 }
