@@ -1,9 +1,10 @@
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using AdvanceWebApi.Data;
+using AdvanceWebApi.Model;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AdvanceWebApi.Model;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AdvanceWebApiContextConnection") ?? throw new InvalidOperationException("Connection string 'AdvanceWebApiContextConnection' not found.");
@@ -41,8 +42,8 @@ builder.Services.AddApiVersioning(options =>
      options.GroupNameFormat = "'v'VVV";
      options.SubstituteApiVersionInUrl = true;
  });
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345ThisIsAVeryLongSecretKeyForJWTTokenGeneration123456789"));
         options.SaveToken = true;
